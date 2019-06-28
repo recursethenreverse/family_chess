@@ -1,5 +1,5 @@
 import unittest
-from chess_engine import Board, Square, Space, Piece, Pawn, Rook
+from chess_engine import Board, Square, Space, Piece, Pawn, Rook, Bishop
 from chess_engine import MBL,PIECE_PAWN,SIDE_BLACK
 
 
@@ -43,8 +43,6 @@ class Test_Square(unittest.TestCase):
     def test_repr(self):
         s = Square(0,0)
         self.assertEqual(str(s), "[]")
-        s.piece = 1
-        self.assertEqual(str(s),"1")
 
     def test_base_class_checkbounds(self):
         s = Square(0,0)
@@ -84,9 +82,26 @@ class Test_Pawn(unittest.TestCase):
 class Test_Rook(unittest.TestCase):
     def test_possible_moves(self):
         r = Rook(0,0,SIDE_BLACK)
-        pm = r.possible_moves()
-        #TODO
+        expected_results = set([(0,1),(0,2),(0,3),(0,4),(0,5),(0,6),(0,7),(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0)])
+        self.assertEqual(r.possible_moves(),expected_results)
 
+    def test_possible_attacks(self):
+        r = Rook(4,4,SIDE_BLACK)
+        expected_results = set([(4,0),(0,4),(4,1),(4,2),(4,3),(4,5),(4,6),(4,7),(1,4),(2,4),(3,4),(5,4),(6,4),(7,4)])
+        self.assertEqual(r.possible_moves(),expected_results)
+
+
+class Test_Bishop(unittest.TestCase):
+    def test_possible_moves(self):
+        b = Bishop(5,5,SIDE_BLACK)
+        expected_results = set([(0,0),(1,1),(2,2),(3,3),(4,4),(6,6),(7,7),(4,6),(3,7),(6,4),(7,3)])
+        self.assertEqual(b.possible_moves(),expected_results) 
+
+    def test_possible_attacks(self):
+        b = Bishop(0,0,SIDE_BLACK)
+        expected_results = set([(1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7)])
+        self.assertEqual(b.possible_moves(),expected_results) 
+        
 
 if __name__ == "__main__":
     unittest.main()

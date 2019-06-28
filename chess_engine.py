@@ -1,4 +1,5 @@
 from abc import ABC,abstractmethod
+import copy 
 
 MBL = 7 #0 index maximum board length
 SIDE_WHITE = "W"
@@ -59,14 +60,10 @@ class Square(Space):
     def __init__(self, x, y, **kwargs):
         super().__init__(x, y, **kwargs)
         self.id = "{}{}".format(x,y)
-        self.piece = None 
 
     def __repr__(self):
-        if self.piece:
-            return str(self.piece)
-        else:
-            return "[]"
-            # return "{}{}".format(self.x,self.y)
+        return "[]"
+        # return "{}{}".format(self.x,self.y)
 
 
 class Piece(Space):
@@ -119,7 +116,22 @@ class Rook(Piece):
     def possible_attacks(self):
         return self.possible_moves()
 
+class Bishop(Piece):
+    def __init__(self, x, y, side, **kwargs):
+        return super().__init__(x, y, side, PIECE_BISHOP, **kwargs)
 
+    def possible_moves(self):
+        ret = []
+        for i in range(MBL+1,0,-1):
+            ret.append((self.x-i, self.y-i))
+            ret.append((self.x-i, self.y+i))
+            ret.append((self.x+i, self.y+i))
+            ret.append((self.x+i, self.y-i))
+        return self._filter_out_of_bounds_moves(set(ret))
+
+        
+    def possible_attacks(self):
+        return self.possible_moves()
 class Board(object):
     def __init__(self, *args, **kwargs):
         self.board = []
@@ -161,11 +173,17 @@ class Board(object):
         #rooks
         self.add_piece(Rook(0,0,self.perspective))
         self.add_piece(Rook(7,0,self.perspective))
+        self.add_piece(Bishop(2,0,self.perspective))
+        self.add_piece(Bishop(5,0,self.perspective))
 
     def switch_sides(self):
         self.board.reverse()
         [r.reverse() for r in self.board]
         self.perspective = SIDE_BLACK if self.perspective == SIDE_WHITE else SIDE_WHITE
+
+    def switch_piece_perspective(self, x,y):
+        return ((MBL - x, MBL - y)) 
+        
 
     def print_board_to_console(self):
         print()
@@ -204,7 +222,9 @@ if __name__ == "__main__":
     b.switch_sides()
     move_pawns()
     b.switch_sides()
+
     # p1 = b.get_piece((0,1))
     # b.move_piece(p1,max(p1.possible_moves()))
+    
     b.print_board_to_console()
     print()
