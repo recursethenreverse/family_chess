@@ -6,6 +6,11 @@ SIDE_BLACK = "B"
 
 PIECE_PAWN = "P"
 PIECE_ROOK = "R"
+PIECE_BISHOP = "B"
+PIECE_KNIGHT = "N"
+PIECE_QUEEN = "Q"
+PIECE_KING = "K"
+
 
 class Space(ABC):
     def __init__(self, x, y, **kwargs):
